@@ -13,9 +13,8 @@ import * as db from '../data/mongodb'
 // vuln-code-snippet start noSqlReviewsChallenge forgedReviewChallenge
 export function updateProductReviews () {
   return (req: Request, res: Response, next: NextFunction) => {
-    
     const user = security.authenticatedUsers.from(req) // vuln-code-snippet vuln-line forgedReviewChallenge
-    
+
     db.reviewsCollection.update(
       { _id: req.body.id, author: user?.data.email },
       { $set: { message: req.body.message } },
