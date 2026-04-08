@@ -5,6 +5,8 @@
 
 import { type Request, type Response, type NextFunction } from 'express'
 
+import { sanitizeHtml } from '../lib/insecurity'
+
 import * as challengeUtils from '../lib/challengeUtils'
 import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
@@ -16,8 +18,8 @@ export function updateProductReviews () {
     const user = security.authenticatedUsers.from(req) // vuln-code-snippet vuln-line forgedReviewChallenge
 
     db.reviewsCollection.update(
-      { _id: req.body.id, author: user?.data.email },
-      { $set: { message: req.body.message } },
+      { _id: sanitizeHtml(req.body.id), author: user?.data.email },
+      { $set: { message: sanitizeHtml(req.body.message) } },
       { multi: true }
     ).then(
       (result: { modified: number, original: Array<{ author: any }> }) => {
