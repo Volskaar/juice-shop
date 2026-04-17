@@ -29,6 +29,7 @@ InferCreationAttributes<Product>
   declare deluxePrice: number
   declare image: string
   declare BasketItem?: CreationOptional<BasketItemModel> // Note this is optional since it's only populated when explicitly requested in code
+  declare deletedAt: CreationOptional<Date|null>
 }
 
 const ProductModelInit = (sequelize: Sequelize) => {
@@ -38,6 +39,10 @@ const ProductModelInit = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+      },
+      deletedAt: {
+        type: DataTypes.DATE,
+        defaultValue: null
       },
       name: DataTypes.STRING,
       description: {

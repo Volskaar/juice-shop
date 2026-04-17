@@ -10,6 +10,8 @@ import * as models from '../models/index'
 import { UserModel } from '../models/user'
 import { challenges } from '../data/datacache'
 import * as challengeUtils from '../lib/challengeUtils'
+import { Op } from 'sequelize';
+import { ProductModel } from '../models/product';
 
 class ErrorWithParent extends Error {
   parent: Error | undefined
@@ -21,14 +23,21 @@ export function searchProducts () {
     let criteria: string = req.query.q === 'undefined' ? '' : (req.query.q as string) ?? ''
     criteria = (criteria.length <= 200) ? criteria : criteria.substring(0, 200)
     const searchTerm = `%${criteria}%`
-    models.sequelize.query(
-      `SELECT * FROM Products
-      WHERE ((name LIKE :search OR description LIKE :search)
-      AND deletedAt IS NULL) ORDER BY name`,
-      {
-        replacements: { search: searchTerm }
-      }
-    ).then(([products]: any) => {
+    ProductModel.findAll({
+      where: {
+        [Op.and]: [
+          {
+            [Op.or]: [
+              { name : {[Op.like]: searchTerm} },
+              { description : {[Op.like]: searchTerm} }
+            ]
+          },
+        { deletedAt: null }
+        ]
+      },
+      order: [['name', 'ASC']],
+      raw: true
+    }).then((products: any) => {
       const dataString = JSON.stringify(products)
       if (challengeUtils.notSolved(challenges.unionSqlInjectionChallenge)) { // vuln-code-snippet hide-start
         let solved = true
