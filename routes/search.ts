@@ -10,8 +10,8 @@ import * as models from '../models/index'
 import { UserModel } from '../models/user'
 import { challenges } from '../data/datacache'
 import * as challengeUtils from '../lib/challengeUtils'
-import { Op } from 'sequelize';
-import { ProductModel } from '../models/product';
+import { Op } from 'sequelize'
+import { ProductModel } from '../models/product'
 
 class ErrorWithParent extends Error {
   parent: Error | undefined
@@ -28,11 +28,11 @@ export function searchProducts () {
         [Op.and]: [
           {
             [Op.or]: [
-              { name : {[Op.like]: searchTerm} },
-              { description : {[Op.like]: searchTerm} }
+              { name: { [Op.like]: searchTerm } },
+              { description: { [Op.like]: searchTerm } }
             ]
           },
-        { deletedAt: null }
+          { deletedAt: null }
         ]
       },
       order: [['name', 'ASC']],
