@@ -228,8 +228,9 @@ const routes: Routes = [
     loadChildren: async () => await loadWeb3WalletModule()
   },
   { // vuln-code-snippet neutral-line web3SandboxChallenge
-    path: 'web3-sandbox', // vuln-code-snippet vuln-line web3SandboxChallenge
-    loadChildren: async () => await loadWeb3SandboxModule() // vuln-code-snippet neutral-line web3SandboxChallenge
+    path: 'web3-sandbox',
+    canActivate: [AdminGuard],
+    loadChildren: async () => await loadWeb3SandboxModule()
   }, // vuln-code-snippet neutral-line web3SandboxChallenge
   {
     path: 'bee-haven',
